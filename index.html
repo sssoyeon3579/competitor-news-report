@@ -147,6 +147,39 @@ html,body{height:100%;font-family:'Pretendard',sans-serif;background:var(--bg);c
 @media(max-width:480px){
   .cards-grid{grid-template-columns:1fr}
 }
+
+/* ─── 인쇄용 표 (화면에서는 숨김) ─── */
+.print-table{display:none}
+
+/* ─── 인쇄 버튼 ─── */
+.print-btn{position:fixed;top:16px;right:20px;z-index:200;padding:10px 22px;background:var(--white);border:1px solid #ddd;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;font-family:'Pretendard',sans-serif;color:#555;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:all .2s}
+.print-btn:hover{background:var(--text);color:var(--white)}
+
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{height:auto;overflow:visible}
+  .progress-bar,.nav-bar,.page-logo,.print-btn,.filter-bar,.share-btn{display:none!important}
+  .slides-container{position:static}
+  .slide{position:static!important;opacity:1!important;transform:none!important;pointer-events:auto!important;overflow:visible!important;page-break-after:always;height:auto!important;background:#fff!important}
+  .slide-inner{padding:20px 30px 30px;max-width:100%}
+  .cover{min-height:auto;padding:80px 40px;page-break-after:always}
+  .cards-grid{display:none!important}
+  .print-table{display:table!important;width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}
+  .print-table th{background:#f3f4f6;padding:8px 10px;text-align:left;font-weight:700;border-bottom:2px solid #ddd;font-size:11px}
+  .print-table td{padding:7px 10px;border-bottom:1px solid #eee;vertical-align:top;font-size:11px;line-height:1.4}
+  .print-table .pt-date{width:90px;white-space:nowrap;color:#555}
+  .print-table .pt-title{font-weight:600}
+  .print-table .pt-source{width:80px;color:#777}
+  .print-table .pt-cat{width:110px;font-size:10px}
+  .print-table .pt-type{width:60px;font-size:10px;color:#999}
+  .print-table tr.pt-article{background:#fffbeb}
+  .company-stats{margin-bottom:10px}
+  .summary-title{font-size:1.6rem}
+  .company-name{font-size:1.6rem}
+  .bar-track{height:30px}
+  .insight-card{break-inside:avoid}
+  .impl-section{break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -185,97 +218,96 @@ const COMPANY_GRADIENT={
   미래엔:'linear-gradient(135deg,#3b0764 0%,#6d28d9 100%)',
   동아출판:'linear-gradient(135deg,#7c2d12 0%,#c2410c 100%)'
 };
-const CAT_COLORS={'신제품·서비스 출시':'#3b82f6','수상·인증·기타 홍보':'#10b981','사업 제휴·투자':'#8b5cf6','실적·경영 동향':'#f59e0b'};
+const CAT_COLORS={'교과서·학습서':'#0891b2','AI 디지털 교육자료(AIDT)':'#1d4ed8','AI 에듀테크':'#7c3aed','교사 지원·네트워크':'#10b981','업무협약·MOU':'#8b5cf6','마케팅·이벤트':'#f59e0b','실적·경영':'#ef4444'};
 
 const DATA={
 천재교육:[
-{d:46113,t:'독서논술 창업 문 연다…해법독서논술, 전국 사업설명회 개최',u:'https://biz.heraldcorp.com/article/10707216?ref=naver',s:'보도자료',c:'사업 제휴·투자',i:'https://wimg.heraldcorp.com/news/cms/2026/04/01/news-p.v1.20260401.e12f03de03464fbf92f1190e41c60871_T1.jpg'},
-{d:46115,t:'플렉슬 스콘, 천재교육 전자책 33종 서비스',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=830076',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202604/830076_837693_1637_v150.jpg'},
-{d:46119,t:'천재교육, 고등 영어 입문 교재 이벤트…교사용 세트·SNS 리뷰 혜택',u:'https://n.news.naver.com/mnews/article/016/0002625673?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/016/2026/04/07/0002625673_001_20260407084110849.jpg?type=w800'},
-{d:46120,t:"천재교육·천재교과서, '제8회 밀크티 창작동화 공모전' 5월 4일부터 접수 시작",u:'https://n.news.naver.com/mnews/article/030/0003415781?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/04/08/0003415781_001_20260408110120111.jpg?type=w800'},
-{d:46121,t:'천재교육 T셀파, 예비교원 대상 교수학습·에듀테크 체험 로드쇼 진행',u:'https://edu.chosun.com/site/data/html_dir/2026/04/09/2026040980027.html',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://edu.chosun.com/site/data/img_dir/2026/04/09/2026040980027_0.jpg'},
-{d:46126,t:"천재교과서, 주요 브랜드 가맹점 '급감'… 공부방 프랜차이즈 '구조적 한계'",u:'https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065589502423290',s:'기사',c:'실적·경영 동향',i:'https://www.megaeconomy.co.kr/news/data/20260414/p1065589502423290_221_thum.jpg'},
-{d:46126,t:"과학내신부터 수능통합과학까지 중등인강 밀크티, '체크체크 시냅스 특강' 오픈",u:'https://www.enetnews.co.kr/news/articleView.html?idxno=48847',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.enetnews.co.kr/news/thumbnail/202604/48847_65932_2827_v150.jpg'},
-{d:46128,t:"'AI 개인화 기술'로 과목별 약점 분석해 학습 보완",u:'https://n.news.naver.com/mnews/article/020/0003712757?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/020/2026/04/16/0003712757_001_20260416043249246.jpg?type=w800'},
-{d:46132,t:"천재교과서 밀크T, 2026 국가산업대상 'AI 학습 부문' 수상",u:'https://n.news.naver.com/mnews/article/030/0003419381?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/04/20/0003419381_001_20260420110113984.jpg?type=w800'},
-{d:46133,t:'"매출 20% 늘어도 순손실"…천재교과서, \'AIDT 후폭풍\' 어쩌나',u:'https://n.news.naver.com/mnews/article/138/0002225306?sid=105',s:'기사',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/138/2026/04/21/0002225306_001_20260421150008241.jpg?type=w800'},
-{d:46134,t:'천재교육, 중·고등 과학 학습서 라인업 강화',u:'https://n.news.naver.com/mnews/article/277/0005753005?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/277/2026/04/22/0005753005_001_20260422093015380.png?type=w800'},
-{d:46134,t:"천재교육, '체크체크' 내신 대비서 2권 이상 구매 시 수학 공식집 증정 이벤트 진행",u:'https://n.news.naver.com/mnews/article/018/0006263441?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/018/2026/04/22/0006263441_001_20260422140210699.jpg?type=w800'},
-{d:46134,t:'천재교과서, 초등 체육 교과서 점유율 1위···"현장 중심 콘텐츠 통했다"',u:'https://www.enetnews.co.kr/news/articleView.html?idxno=49169',s:'보도자료',c:'실적·경영 동향',i:'https://cdn.enetnews.co.kr/news/thumbnail/202604/49169_66363_3220_v150.jpg'},
-{d:46135,t:"천재교육·천재교과서, 초등 '개념이 답이다·독해가 힘이다' 신간 이벤트 진행",u:'https://n.news.naver.com/mnews/article/277/0005753867?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/277/2026/04/23/0005753867_001_20260423140511855.jpg?type=w800'},
-{d:46140,t:'천재교육 T셀파, 스승의 날 맞이 교사 응원 이벤트',u:'https://n.news.naver.com/mnews/article/016/0002636208?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/016/2026/04/28/0002636208_001_20260428082415368.jpg?type=w800'},
-{d:46140,t:"천재교과서, 밀크티아이 '밀크T 예비초 키즈' 통해 기초 역량 관리 지원 나선다",u:'https://n.news.naver.com/mnews/article/030/0003422503?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/04/28/0003422503_001_20260428150124105.jpg?type=w800'},
-{d:46140,t:"천재교과서 밀크티중학, 22개정 교육과정 반영한 'it북' 자료 제공",u:'https://n.news.naver.com/mnews/article/029/0003024216?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/029/2026/04/28/0003024216_001_20260428170112068.jpg?type=w800'},
-{d:46140,t:'천재교과서 밀크티초등, 학습 진단부터 풍성한 선물까지… 무료체험 이벤트 진행',u:'https://www.lecturernews.com/news/articleView.html?idxno=201281',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.lecturernews.com/news/thumbnail/202604/201281_467390_858_v150.jpg'},
-{d:46141,t:'초등 1~2학년 수업, 놀이로 배운다…천재교육 티셀파, 교사 연수 개최',u:'https://n.news.naver.com/mnews/article/016/0002636948?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/016/2026/04/29/0002636948_001_20260429091408742.jpg?type=w800'},
-{d:46141,t:"천재교과서, 5차 교육과정부터 22개정까지 이어온 '국가 대표급' 교과서 발행 노하우",u:'https://www.fntoday.co.kr/news/articleView.html?idxno=383429',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://www.fntoday.co.kr/news/thumbnail/202604/2_1313696_1275350_1214_v150.jpg'},
-{d:46142,t:"천재교과서, '교사 중심 AI'로 공교육 디지털 전환 혁신 지원",u:'https://edu.donga.com/news/articleView.html?idxno=107046',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.edu.donga.com/news/photo/202604/107046_171093_4029.jpg'},
-{d:46144,t:"천재교육·천재교과서, 비문학 학습서 '비문학 DNA깨우기 시리즈' 2022 개정 교육과정 맞춰 전면 개편",u:'https://n.news.naver.com/mnews/article/022/0004125290?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/022/2026/05/02/20260430515034_20260502170217479.jpg?type=w800'},
-{d:46145,t:'[교육 알림장]천재교육 티셀파, 초등 저학년 놀이형 수업 연수',u:'https://n.news.naver.com/mnews/article/011/0004617045?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/011/2026/05/03/0004617045_001_20260503233718461.jpg?type=w800'},
-{d:46148,t:"천재교육·천재교과서, '제8회 밀크티 창작동화 공모전' 작품 접수 시작",u:'https://n.news.naver.com/mnews/article/030/0003424502?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/05/06/0003424502_001_20260506110115042.jpg?type=w800'},
-{d:46148,t:'천재교과서 해법독서논술 3000호점 돌파…창업 지원 이벤트',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=837151',s:'보도자료',c:'사업 제휴·투자',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202605/837151_848112_1057_v150.jpg'},
-{d:46148,t:'천재교육 "초등 수학 단계별 학습서 \'수학 리더\' 시리즈로 맞춤형 솔루션 제시"',u:'https://edu.donga.com/news/articleView.html?idxno=107190',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.edu.donga.com/news/photo/202605/107190_171249_1944.jpg'},
-{d:46148,t:"천재교육·천재교과서, 2022 개정 교육과정 반영한 중등 과학 'ESC' 시리즈 개편",u:'https://www.seoul.co.kr/news/economy/2026/05/06/20260506500138',s:'보도자료',c:'신제품·서비스 출시',i:'https://img.seoul.co.kr//img/upload/2026/05/06/SSC_20260506141434_O2.jpg'},
-{d:46154,t:'T셀파, 예비교원 체험부터 수업 사례 발굴까지…AI 디지털 교육자료 현장 지원 확대',u:'https://www.newstap.co.kr/news/articleView.html?idxno=326843',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.newstap.co.kr/news/photo/202605/326843_433040_3334.jpg'},
-{d:46154,t:'[에듀플러스]"천재교육, 영업손실 297억원…AIDT 손실 여파에 적자 3배 커졌다"',u:'https://n.news.naver.com/mnews/article/030/0003426644?sid=102',s:'기사',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/030/2026/05/12/0003426644_001_20260513094418906.png?type=w800'},
-{d:46155,t:"천재교육·천재교과서, '2026 상반기 HME 해법수학 학력평가' 개최",u:'https://n.news.naver.com/mnews/article/030/0003427010?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/05/13/0003427010_001_20260513104315921.jpg?type=w800'},
-{d:46155,t:'천재교과서 밀크티아이, 유아 발달 단계 고려한 한글 교육 프로그램 제공',u:'https://www.segyebiz.com/adxView/20260513513520?OutUrl=naver',s:'보도자료',c:'신제품·서비스 출시',i:'http://www.segyebiz.com//content/image/2026/05/13/20260513513510.jpg'},
-{d:46156,t:"천재교과서-VIDAK, '건강하고 즐거운 초등학생' 디자인 공모전 개최 위한 MOU 체결",u:'https://edu.donga.com/news/articleView.html?idxno=107568',s:'보도자료',c:'사업 제휴·투자',i:'https://cdn.edu.donga.com/news/photo/202605/107568_171648_2842.jpg'},
-{d:46164,t:'한국교원대-천재교과서 교과서/교수학습자료 공동연구 위해 맞손',u:'https://www.veritas-a.com/news/articleView.html?idxno=611623',s:'보도자료',c:'사업 제휴·투자',i:'https://cdn.veritas-a.com/news/thumbnail/202605/611623_524777_5135_v150.jpg'},
-{d:46174,t:"천재교과서 밀크티초등, 웹 기반 학습 체험 서비스 '바로체험' 오픈",u:'https://n.news.naver.com/mnews/article/030/0003433355?sid=105',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/06/01/0003433355_001_20260601150113317.jpg?type=w800'},
-{d:46175,t:'천재교과서, 초등 통합교과 놀이 수업 연수 성료… "현장 적용성 높은 프로그램 호응"',u:'https://www.lecturernews.com/news/articleView.html?idxno=203537',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.lecturernews.com/news/thumbnail/202606/203537_470701_4216_v150.jpg'},
-{d:46175,t:"천재교육 T셀파, '2026 천재 T셀파 수업 혁신 연구대회' 개최",u:'https://n.news.naver.com/mnews/article/277/0005770712?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/277/2026/06/02/0005770712_001_20260602081212523.png?type=w800'},
-{d:46185,t:'"AI 시대, 초등학생 코딩교육 중요성 커져"… 초등학습지 밀크티로 시작하는 코딩수업',u:'https://www.lecturernews.com/news/articleView.html?idxno=204112',s:'기사',c:'신제품·서비스 출시',i:'https://cdn.lecturernews.com/news/thumbnail/202606/204112_471469_338_v150.jpg'},
-{d:46188,t:"천재교육, '고등 셀파' 사회·과학 시리즈 라인업 확대… 진로선택 과목 내신 대비 강화",u:'https://edu.donga.com/news/articleView.html?idxno=108809',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.edu.donga.com/news/photo/202606/108809_173005_4816.jpg'},
-{d:46196,t:"천재교육·천재교과서 T셀파(티셀파), Q.U.O.K.A 연구회와 '2026 디지털센서·AI 과학에듀톤 대회' 개최",u:'https://edu.donga.com/news/articleView.html?idxno=109172',s:'보도자료',c:'사업 제휴·투자',i:'https://cdn.edu.donga.com/news/photo/202606/109172_173394_2425.png'},
-{d:46197,t:'천재교과서, 협업 중심 조직문화 교육 진행…"교과서는 협업의 결과물"',u:'https://edu.donga.com/news/articleView.html?idxno=109217',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.edu.donga.com/news/photo/202606/109217_173443_245.jpg'}
+{d:46113,t:'독서논술 창업 문 연다…해법독서논술, 전국 사업설명회 개최',u:'https://biz.heraldcorp.com/article/10707216?ref=naver',s:'보도자료',c:'마케팅·이벤트',i:'https://wimg.heraldcorp.com/news/cms/2026/04/01/news-p.v1.20260401.e12f03de03464fbf92f1190e41c60871_T1.jpg'},
+{d:46115,t:'플렉슬 스콘, 천재교육 전자책 33종 서비스',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=830076',s:'보도자료',c:'교과서·학습서',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202604/830076_837693_1637_v150.jpg'},
+{d:46119,t:'천재교육, 고등 영어 입문 교재 이벤트…교사용 세트·SNS 리뷰 혜택',u:'https://n.news.naver.com/mnews/article/016/0002625673?sid=101',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/016/2026/04/07/0002625673_001_20260407084110849.jpg?type=w800'},
+{d:46120,t:"천재교육·천재교과서, '제8회 밀크티 창작동화 공모전' 5월 4일부터 접수 시작",u:'https://n.news.naver.com/mnews/article/030/0003415781?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/04/08/0003415781_001_20260408110120111.jpg?type=w800'},
+{d:46121,t:'천재교육 T셀파, 예비교원 대상 교수학습·에듀테크 체험 로드쇼 진행',u:'https://edu.chosun.com/site/data/html_dir/2026/04/09/2026040980027.html',s:'보도자료',c:'교사 지원·네트워크',i:'https://edu.chosun.com/site/data/img_dir/2026/04/09/2026040980027_0.jpg'},
+{d:46126,t:"천재교과서, 주요 브랜드 가맹점 '급감'… 공부방 프랜차이즈 '구조적 한계'",u:'https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065589502423290',s:'기사',c:'실적·경영',i:'https://www.megaeconomy.co.kr/news/data/20260414/p1065589502423290_221_thum.jpg'},
+{d:46126,t:"과학내신부터 수능통합과학까지 중등인강 밀크티, '체크체크 시냅스 특강' 오픈",u:'https://www.enetnews.co.kr/news/articleView.html?idxno=48847',s:'보도자료',c:'교과서·학습서',i:'https://cdn.enetnews.co.kr/news/thumbnail/202604/48847_65932_2827_v150.jpg'},
+{d:46132,t:"천재교과서 밀크T, 2026 국가산업대상 'AI 학습 부문' 수상",u:'https://n.news.naver.com/mnews/article/030/0003419381?sid=102',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/030/2026/04/20/0003419381_001_20260420110113984.jpg?type=w800'},
+{d:46133,t:'"매출 20% 늘어도 순손실"…천재교과서, \'AIDT 후폭풍\' 어쩌나',u:'https://n.news.naver.com/mnews/article/138/0002225306?sid=105',s:'기사',c:'실적·경영',i:'https://imgnews.pstatic.net/image/138/2026/04/21/0002225306_001_20260421150008241.jpg?type=w800'},
+{d:46134,t:'천재교육, 중·고등 과학 학습서 라인업 강화',u:'https://n.news.naver.com/mnews/article/277/0005753005?sid=101',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/277/2026/04/22/0005753005_001_20260422093015380.png?type=w800'},
+{d:46134,t:"천재교육, '체크체크' 내신 대비서 2권 이상 구매 시 수학 공식집 증정 이벤트 진행",u:'https://n.news.naver.com/mnews/article/018/0006263441?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/018/2026/04/22/0006263441_001_20260422140210699.jpg?type=w800'},
+{d:46134,t:'천재교과서, 초등 체육 교과서 점유율 1위···"현장 중심 콘텐츠 통했다"',u:'https://www.enetnews.co.kr/news/articleView.html?idxno=49169',s:'보도자료',c:'교과서·학습서',i:'https://cdn.enetnews.co.kr/news/thumbnail/202604/49169_66363_3220_v150.jpg'},
+{d:46135,t:"천재교육·천재교과서, 초등 '개념이 답이다·독해가 힘이다' 신간 이벤트 진행",u:'https://n.news.naver.com/mnews/article/277/0005753867?sid=101',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/277/2026/04/23/0005753867_001_20260423140511855.jpg?type=w800'},
+{d:46140,t:'천재교육 T셀파, 스승의 날 맞이 교사 응원 이벤트',u:'https://n.news.naver.com/mnews/article/016/0002636208?sid=101',s:'보도자료',c:'교사 지원·네트워크',i:'https://imgnews.pstatic.net/image/016/2026/04/28/0002636208_001_20260428082415368.jpg?type=w800'},
+{d:46140,t:"천재교과서, 밀크티아이 '밀크T 예비초 키즈' 통해 기초 역량 관리 지원 나선다",u:'https://n.news.naver.com/mnews/article/030/0003422503?sid=102',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/030/2026/04/28/0003422503_001_20260428150124105.jpg?type=w800'},
+{d:46140,t:"천재교과서 밀크티중학, 22개정 교육과정 반영한 'it북' 자료 제공",u:'https://n.news.naver.com/mnews/article/029/0003024216?sid=102',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/029/2026/04/28/0003024216_001_20260428170112068.jpg?type=w800'},
+{d:46140,t:'천재교과서 밀크티초등, 학습 진단부터 풍성한 선물까지… 무료체험 이벤트 진행',u:'https://www.lecturernews.com/news/articleView.html?idxno=201281',s:'보도자료',c:'마케팅·이벤트',i:'https://cdn.lecturernews.com/news/thumbnail/202604/201281_467390_858_v150.jpg'},
+{d:46141,t:'초등 1~2학년 수업, 놀이로 배운다…천재교육 티셀파, 교사 연수 개최',u:'https://n.news.naver.com/mnews/article/016/0002636948?sid=101',s:'보도자료',c:'교사 지원·네트워크',i:'https://imgnews.pstatic.net/image/016/2026/04/29/0002636948_001_20260429091408742.jpg?type=w800'},
+{d:46141,t:"천재교과서, 5차 교육과정부터 22개정까지 이어온 '국가 대표급' 교과서 발행 노하우",u:'https://www.fntoday.co.kr/news/articleView.html?idxno=383429',s:'보도자료',c:'교과서·학습서',i:'https://www.fntoday.co.kr/news/thumbnail/202604/2_1313696_1275350_1214_v150.jpg'},
+{d:46142,t:"천재교과서, '교사 중심 AI'로 공교육 디지털 전환 혁신 지원",u:'https://edu.donga.com/news/articleView.html?idxno=107046',s:'보도자료',c:'AI 에듀테크',i:'https://cdn.edu.donga.com/news/photo/202604/107046_171093_4029.jpg'},
+{d:46144,t:"천재교육·천재교과서, 비문학 학습서 '비문학 DNA깨우기 시리즈' 2022 개정 교육과정 맞춰 전면 개편",u:'https://n.news.naver.com/mnews/article/022/0004125290?sid=101',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/022/2026/05/02/20260430515034_20260502170217479.jpg?type=w800'},
+{d:46145,t:'[교육 알림장]천재교육 티셀파, 초등 저학년 놀이형 수업 연수',u:'https://n.news.naver.com/mnews/article/011/0004617045?sid=102',s:'보도자료',c:'교사 지원·네트워크',i:'https://imgnews.pstatic.net/image/011/2026/05/03/0004617045_001_20260503233718461.jpg?type=w800'},
+{d:46148,t:"천재교육·천재교과서, '제8회 밀크티 창작동화 공모전' 작품 접수 시작",u:'https://n.news.naver.com/mnews/article/030/0003424502?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/05/06/0003424502_001_20260506110115042.jpg?type=w800'},
+{d:46148,t:'천재교과서 해법독서논술 3000호점 돌파…창업 지원 이벤트',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=837151',s:'보도자료',c:'마케팅·이벤트',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202605/837151_848112_1057_v150.jpg'},
+{d:46148,t:'천재교육 "초등 수학 단계별 학습서 \'수학 리더\' 시리즈로 맞춤형 솔루션 제시"',u:'https://edu.donga.com/news/articleView.html?idxno=107190',s:'보도자료',c:'교과서·학습서',i:'https://cdn.edu.donga.com/news/photo/202605/107190_171249_1944.jpg'},
+{d:46148,t:"천재교육·천재교과서, 2022 개정 교육과정 반영한 중등 과학 'ESC' 시리즈 개편",u:'https://www.seoul.co.kr/news/economy/2026/05/06/20260506500138',s:'보도자료',c:'교과서·학습서',i:'https://img.seoul.co.kr//img/upload/2026/05/06/SSC_20260506141434_O2.jpg'},
+{d:46154,t:'T셀파, 예비교원 체험부터 수업 사례 발굴까지…AI 디지털 교육자료 현장 지원 확대',u:'https://www.newstap.co.kr/news/articleView.html?idxno=326843',s:'보도자료',c:'AI 에듀테크',i:'https://cdn.newstap.co.kr/news/photo/202605/326843_433040_3334.jpg'},
+{d:46154,t:'[에듀플러스]"천재교육, 영업손실 297억원…AIDT 손실 여파에 적자 3배 커졌다"',u:'https://n.news.naver.com/mnews/article/030/0003426644?sid=102',s:'기사',c:'실적·경영',i:'https://imgnews.pstatic.net/image/030/2026/05/12/0003426644_001_20260513094418906.png?type=w800'},
+{d:46155,t:"천재교육·천재교과서, '2026 상반기 HME 해법수학 학력평가' 개최",u:'https://n.news.naver.com/mnews/article/030/0003427010?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/05/13/0003427010_001_20260513104315921.jpg?type=w800'},
+{d:46155,t:'천재교과서 밀크티아이, 유아 발달 단계 고려한 한글 교육 프로그램 제공',u:'https://www.segyebiz.com/adxView/20260513513520?OutUrl=naver',s:'보도자료',c:'AI 에듀테크',i:'http://www.segyebiz.com//content/image/2026/05/13/20260513513510.jpg'},
+{d:46156,t:"천재교과서-VIDAK, '건강하고 즐거운 초등학생' 디자인 공모전 개최 위한 MOU 체결",u:'https://edu.donga.com/news/articleView.html?idxno=107568',s:'보도자료',c:'업무협약·MOU',i:'https://cdn.edu.donga.com/news/photo/202605/107568_171648_2842.jpg'},
+{d:46164,t:'한국교원대-천재교과서 교과서/교수학습자료 공동연구 위해 맞손',u:'https://www.veritas-a.com/news/articleView.html?idxno=611623',s:'보도자료',c:'업무협약·MOU',i:'https://cdn.veritas-a.com/news/thumbnail/202605/611623_524777_5135_v150.jpg'},
+{d:46174,t:"천재교과서 밀크티초등, 웹 기반 학습 체험 서비스 '바로체험' 오픈",u:'https://n.news.naver.com/mnews/article/030/0003433355?sid=105',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/030/2026/06/01/0003433355_001_20260601150113317.jpg?type=w800'},
+{d:46175,t:'천재교과서, 초등 통합교과 놀이 수업 연수 성료… "현장 적용성 높은 프로그램 호응"',u:'https://www.lecturernews.com/news/articleView.html?idxno=203537',s:'보도자료',c:'교사 지원·네트워크',i:'https://cdn.lecturernews.com/news/thumbnail/202606/203537_470701_4216_v150.jpg'},
+{d:46175,t:"천재교육 T셀파, '2026 천재 T셀파 수업 혁신 연구대회' 개최",u:'https://n.news.naver.com/mnews/article/277/0005770712?sid=101',s:'보도자료',c:'교사 지원·네트워크',i:'https://imgnews.pstatic.net/image/277/2026/06/02/0005770712_001_20260602081212523.png?type=w800'},
+{d:46185,t:'"AI 시대, 초등학생 코딩교육 중요성 커져"… 초등학습지 밀크티로 시작하는 코딩수업',u:'https://www.lecturernews.com/news/articleView.html?idxno=204112',s:'기사',c:'AI 에듀테크',i:'https://cdn.lecturernews.com/news/thumbnail/202606/204112_471469_338_v150.jpg'},
+{d:46188,t:"천재교육, '고등 셀파' 사회·과학 시리즈 라인업 확대… 진로선택 과목 내신 대비 강화",u:'https://edu.donga.com/news/articleView.html?idxno=108809',s:'보도자료',c:'교과서·학습서',i:'https://cdn.edu.donga.com/news/photo/202606/108809_173005_4816.jpg'},
+{d:46196,t:"천재교육·천재교과서 T셀파(티셀파), Q.U.O.K.A 연구회와 '2026 디지털센서·AI 과학에듀톤 대회' 개최",u:'https://edu.donga.com/news/articleView.html?idxno=109172',s:'보도자료',c:'업무협약·MOU',i:'https://cdn.edu.donga.com/news/photo/202606/109172_173394_2425.png'},
+{d:46197,t:'천재교과서, 협업 중심 조직문화 교육 진행…"교과서는 협업의 결과물"',u:'https://edu.donga.com/news/articleView.html?idxno=109217',s:'보도자료',c:'실적·경영',i:'https://cdn.edu.donga.com/news/photo/202606/109217_173443_245.jpg'}
 ],
 비상교육:[
-{d:46118,t:"비상교육 '딱풀리는수학', 전국 지역본부장 모집 설명회 개최",u:'https://edu.donga.com/news/articleView.html?idxno=105804',s:'보도자료',c:'사업 제휴·투자',i:'https://cdn.edu.donga.com/news/photo/202604/105804_169783_3352.png'},
-{d:46120,t:"AI로 수업 준비부터 복습까지…비상교육, '올비아' 무료 체험단 모집",u:'https://n.news.naver.com/mnews/article/016/0002626268?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/016/2026/04/08/0002626268_001_20260408084707732.jpg?type=w800'},
-{d:46121,t:"비상교육 딱풀리는수학, '2026 프리미어 교육위원 위촉식' 개최… 현장 중심 혁신 가속화",u:'https://n.news.naver.com/mnews/article/016/0002626908?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/016/2026/04/09/0002626908_001_20260409075613337.jpg?type=w800'},
-{d:46127,t:"비상교육 기출탭탭, 1학기 중간고사 대비 '고1·2 추천 문제집' 오픈",u:'https://n.news.naver.com/mnews/article/016/0002629815?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/016/2026/04/15/0002629815_001_20260415091112333.png?type=w800'},
-{d:46128,t:"비상교육 비바샘, '2026 현장 수업 연구대회' 개최… 교사 중심 교실 수업 혁신 이끈다",u:'https://edu.donga.com/news/articleView.html?idxno=106360',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.edu.donga.com/news/photo/202604/106360_170383_032.jpg'},
-{d:46133,t:"비상교육, 전국진로진학상담교사협의회와 '학생 맞춤형 진로·진학' 지원",u:'https://n.news.naver.com/mnews/article/092/0002419415?sid=105',s:'보도자료',c:'사업 제휴·투자',i:'https://imgnews.pstatic.net/image/092/2026/04/21/0002419415_001_20260421082815587.jpg?type=w800'},
-{d:46140,t:'"쓸데없는 질문이 과학의 시작"…비상교육 오투, 궤도와 과학의 날 강연',u:'https://n.news.naver.com/mnews/article/016/0002636187?sid=101',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/016/2026/04/28/0002636187_001_20260428075910120.jpg?type=w800'},
-{d:46153,t:'학생 줄어 교육업체 다 어렵다?… 비상교육, 지난해 영업익 2배 껑충, 무슨일?[중기+]',u:'https://n.news.naver.com/mnews/article/016/0002641768?sid=101',s:'기사',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/016/2026/05/11/0002641768_001_20260511153108970.png?type=w800'},
-{d:46156,t:"[에듀플러스][EDIX Tokyo 2026]비상교육, 'EDIX Tokyo 2026'서 AI 교육 플랫폼 공개",u:'https://n.news.naver.com/mnews/article/030/0003427668?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/05/14/0003427668_001_20260514143011721.jpg?type=w800'},
-{d:46162,t:'비상교육 기출탭탭, 누적 회원 30만명 넘어…6월 모평 총력 지원',u:'https://n.news.naver.com/mnews/article/092/0002423541?sid=105',s:'보도자료',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/092/2026/05/20/0002423541_001_20260520113710627.png?type=w800'},
-{d:46162,t:'교육시장 침체 속 비상교육만 날았다',u:'https://www.newstomato.com/ReadNews.aspx?no=1301584&inflow=N',s:'기사',c:'실적·경영 동향',i:'https://image.newstomato.com/newsimg/2026/5/20/1301584/attach.jpg?v=202605201648'},
-{d:46171,t:'비상교육은 어떻게 1분기 혼자 웃었나 [에듀테크+]',u:'https://n.news.naver.com/mnews/article/138/0002229336?sid=105',s:'기사',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/138/2026/05/29/0002229336_001_20260529154706329.png?type=w800'},
-{d:46183,t:"AI·디지털 미래 교육 대응...경인교대-비상교육, 예비교원 지원 '맞손'",u:'https://n.news.naver.com/mnews/article/008/0005369818?sid=102',s:'보도자료',c:'사업 제휴·투자',i:'https://imgnews.pstatic.net/image/008/2026/06/10/0005369818_001_20260610114212861.jpg?type=w800'},
-{d:46195,t:'철도공사, 손영수 前비상교육 서비스개발팀장 영입...민간인재 영입 활용',u:'https://www.newspim.com/news/view/20260622000156',s:'기사',c:'실적·경영 동향',i:'https://img.newspim.com/news/2025/09/04/2509041108268410_t1.jpg'}
+{d:46118,t:"비상교육 '딱풀리는수학', 전국 지역본부장 모집 설명회 개최",u:'https://edu.donga.com/news/articleView.html?idxno=105804',s:'보도자료',c:'마케팅·이벤트',i:'https://cdn.edu.donga.com/news/photo/202604/105804_169783_3352.png'},
+{d:46120,t:"AI로 수업 준비부터 복습까지…비상교육, '올비아' 무료 체험단 모집",u:'https://n.news.naver.com/mnews/article/016/0002626268?sid=101',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/016/2026/04/08/0002626268_001_20260408084707732.jpg?type=w800'},
+{d:46121,t:"비상교육 딱풀리는수학, '2026 프리미어 교육위원 위촉식' 개최… 현장 중심 혁신 가속화",u:'https://n.news.naver.com/mnews/article/016/0002626908?sid=101',s:'보도자료',c:'교사 지원·네트워크',i:'https://imgnews.pstatic.net/image/016/2026/04/09/0002626908_001_20260409075613337.jpg?type=w800'},
+{d:46127,t:"비상교육 기출탭탭, 1학기 중간고사 대비 '고1·2 추천 문제집' 오픈",u:'https://n.news.naver.com/mnews/article/016/0002629815?sid=101',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/016/2026/04/15/0002629815_001_20260415091112333.png?type=w800'},
+{d:46128,t:"비상교육 비바샘, '2026 현장 수업 연구대회' 개최… 교사 중심 교실 수업 혁신 이끈다",u:'https://edu.donga.com/news/articleView.html?idxno=106360',s:'보도자료',c:'교사 지원·네트워크',i:'https://cdn.edu.donga.com/news/photo/202604/106360_170383_032.jpg'},
+{d:46133,t:"비상교육, 전국진로진학상담교사협의회와 '학생 맞춤형 진로·진학' 지원",u:'https://n.news.naver.com/mnews/article/092/0002419415?sid=105',s:'보도자료',c:'업무협약·MOU',i:'https://imgnews.pstatic.net/image/092/2026/04/21/0002419415_001_20260421082815587.jpg?type=w800'},
+{d:46140,t:'"쓸데없는 질문이 과학의 시작"…비상교육 오투, 궤도와 과학의 날 강연',u:'https://n.news.naver.com/mnews/article/016/0002636187?sid=101',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/016/2026/04/28/0002636187_001_20260428075910120.jpg?type=w800'},
+{d:46153,t:'학생 줄어 교육업체 다 어렵다?… 비상교육, 지난해 영업익 2배 껑충, 무슨일?[중기+]',u:'https://n.news.naver.com/mnews/article/016/0002641768?sid=101',s:'기사',c:'실적·경영',i:'https://imgnews.pstatic.net/image/016/2026/05/11/0002641768_001_20260511153108970.png?type=w800'},
+{d:46156,t:"[에듀플러스][EDIX Tokyo 2026]비상교육, 'EDIX Tokyo 2026'서 AI 교육 플랫폼 공개",u:'https://n.news.naver.com/mnews/article/030/0003427668?sid=102',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/030/2026/05/14/0003427668_001_20260514143011721.jpg?type=w800'},
+{d:46162,t:'비상교육 기출탭탭, 누적 회원 30만명 넘어…6월 모평 총력 지원',u:'https://n.news.naver.com/mnews/article/092/0002423541?sid=105',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/092/2026/05/20/0002423541_001_20260520113710627.png?type=w800'},
+{d:46162,t:'교육시장 침체 속 비상교육만 날았다',u:'https://www.newstomato.com/ReadNews.aspx?no=1301584&inflow=N',s:'기사',c:'실적·경영',i:'https://image.newstomato.com/newsimg/2026/5/20/1301584/attach.jpg?v=202605201648'},
+{d:46171,t:'비상교육은 어떻게 1분기 혼자 웃었나 [에듀테크+]',u:'https://n.news.naver.com/mnews/article/138/0002229336?sid=105',s:'기사',c:'실적·경영',i:'https://imgnews.pstatic.net/image/138/2026/05/29/0002229336_001_20260529154706329.png?type=w800'},
+{d:46183,t:"AI·디지털 미래 교육 대응...경인교대-비상교육, 예비교원 지원 '맞손'",u:'https://n.news.naver.com/mnews/article/008/0005369818?sid=102',s:'보도자료',c:'업무협약·MOU',i:'https://imgnews.pstatic.net/image/008/2026/06/10/0005369818_001_20260610114212861.jpg?type=w800'},
+{d:46195,t:'철도공사, 손영수 前비상교육 서비스개발팀장 영입...민간인재 영입 활용',u:'https://www.newspim.com/news/view/20260622000156',s:'기사',c:'실적·경영',i:'https://img.newspim.com/news/2025/09/04/2509041108268410_t1.jpg'}
 ],
 미래엔:[
-{d:46113,t:'미래엔그룹, 2026년 정기 임원 인사 및 직급체계 개편 단행',u:'https://n.news.naver.com/mnews/article/030/0003413707?sid=102',s:'보도자료',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/030/2026/04/01/0003413707_001_20260401155813224.jpg?type=w800'},
-{d:46118,t:'(주)미래엔, 작심 스터디카페 협업 중간고사 지원',u:'https://n.news.naver.com/mnews/article/014/0005502855?sid=102',s:'보도자료',c:'사업 제휴·투자',i:'https://imgnews.pstatic.net/image/014/2026/04/06/0005502855_001_20260406094514407.jpg?type=w800'},
-{d:46120,t:"㈜미래엔, 예비 교사 멘토링 프로젝트 '엔토링·미래잇다' 발대식 개최",u:'https://www.cstimes.com/news/articleView.html?idxno=701226',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://www.cstimes.com/news/photo/202604/701226_620795_418.jpg'},
-{d:46122,t:"미래엔 아이세움, 아베 히로시 신작 '새벽' 출간",u:'https://n.news.naver.com/mnews/article/030/0003416727?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/04/10/0003416727_001_20260410122509258.jpg?type=w800'},
-{d:46126,t:"㈜미래엔, 교사 모임 단체 '아꿈선'과 업무협약 체결",u:'https://news.mtn.co.kr/news-detail/2026041409482957815',s:'보도자료',c:'사업 제휴·투자',i:'https://menu.mtn.co.kr/upload/article/2026/04/14/2026041409482957815_00_231.jpg'},
-{d:46133,t:"㈜미래엔, '몽당분필'과 엠티처 교사 연수 운영…업무 협약 기반 교육 협력 강화",u:'https://n.news.naver.com/mnews/article/030/0003419899?sid=102',s:'보도자료',c:'사업 제휴·투자',i:'https://imgnews.pstatic.net/image/030/2026/04/21/0003419899_001_20260421105113917.jpg?type=w800'},
-{d:46134,t:"미래엔 아이세움, 재미난다 과학 시리즈 '우리도 억울합니다!' 출간",u:'https://edu.chosun.com/site/data/html_dir/2026/04/22/2026042280033.html',s:'보도자료',c:'신제품·서비스 출시',i:'https://edu.chosun.com/site/data/img_dir/2026/04/22/2026042280033_0.jpg'},
-{d:46139,t:"㈜미래엔, 초등학생 대상 교육 멘토링 사회공헌 프로그램 '미래엔 희망키움단' 4기 발대식 개최",u:'https://edu.chosun.com/site/data/html_dir/2026/04/27/2026042780059.html',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://edu.chosun.com/site/data/img_dir/2026/04/27/2026042780059_0.jpg'},
-{d:46142,t:"㈜미래엔 아이세움, 가정의 달 맞아 뮤직온더블록과 '2026 광화문 가족 동행 축제' 체험 부스 운영",u:'https://n.news.naver.com/mnews/article/030/0003423449?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/04/30/0003423449_001_20260430134614723.jpg?type=w800'},
-{d:46148,t:'㈜미래엔, 임직원 대상 암·중증질환 지원 복지제도 신설… 위로금 4,900만 원 전달',u:'https://n.news.naver.com/mnews/article/030/0003424794?sid=102',s:'보도자료',c:'실적·경영 동향',i:'https://imgnews.pstatic.net/image/030/2026/05/06/0003424794_001_20260506170617142.jpg?type=w800'},
-{d:46153,t:"미래엔 와이즈베리, 일본 인구전략회의가 제시하는 미래 전략 '지방 창생' 출간",u:'https://n.news.naver.com/mnews/article/030/0003426188?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/05/11/0003426188_001_20260511150008092.jpg?type=w800'},
-{d:46155,t:"미래엔그룹, 키움 히어로즈 스폰서 데이 '2026 미래엔데이' 진행",u:'https://n.news.naver.com/mnews/article/030/0003426946?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/05/13/0003426946_001_20260513093417021.jpg?type=w800'},
-{d:46161,t:"미래엔, 초등 수학 선생님 대상 '수비수학' 그룹 스터디 모집",u:'https://www.cstimes.com/news/articleView.html?idxno=706285',s:'보도자료',c:'신제품·서비스 출시',i:'https://www.cstimes.com/news/photo/202605/706285_626331_1534.jpg'},
-{d:46162,t:"㈜미래엔, '세계 접근성 인식의 날' 맞아 포용형 음악 활동 앱 '모두의 음악' 공개",u:'https://edu.donga.com/news/articleView.html?idxno=107789',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.edu.donga.com/news/photo/202605/107789_171881_1617.jpg'},
-{d:46163,t:'미래엔 초코클래스, MBTI처럼 학습 성향도 진단…진화하는 LMS',u:'https://news.mtn.co.kr/news-detail/2026052116391047923',s:'기사',c:'신제품·서비스 출시',i:'https://assets.mtn.co.kr/mtn/2026/05/O7gRoX4JTyAo8csK/image/20260521_172450//9968-1779351845470_06.jpg'},
-{d:46169,t:"미래엔 아이세움, '작전명 파도, 폐교는 거절합니다' 출간",u:'https://n.news.naver.com/mnews/article/030/0003431523?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/05/27/0003431523_001_20260527091808122.jpg?type=w800'},
-{d:46171,t:"미래엔, 학원·공부방 선생님 대상 '여름방학 간식 이벤트' 진행",u:'https://edu.donga.com/news/articleView.html?idxno=108189',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.edu.donga.com/news/photo/202605/108189_172328_556.png'},
-{d:46183,t:"㈜미래엔, 유아 디지털 학습 플랫폼 '초코키즈' 런칭",u:'https://n.news.naver.com/mnews/article/030/0003436151?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/06/10/0003436151_001_20260610102013044.jpg?type=w800'},
-{d:46190,t:"㈜미래엔, '수비수학' 초등 전 학년 라인업 완성… 학부모 체험단 모집",u:'https://n.news.naver.com/mnews/article/030/0003438364?sid=102',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/030/2026/06/17/0003438364_001_20260617100217321.jpg?type=w800'},
-{d:46192,t:'㈜미래엔, 제주교총·세종교총·대구교총과 업무협약 체결',u:'https://www.cstimes.com/news/articleView.html?idxno=710363',s:'보도자료',c:'사업 제휴·투자',i:'https://www.cstimes.com/news/photo/202606/710363_630214_181.jpg'},
-{d:46195,t:"㈜미래엔, 2026 '초등학생 톡톡 손글씨 공모전' 및 '창작 글감 공모전' 개최",u:'https://n.news.naver.com/mnews/article/030/0003439872?sid=102',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://imgnews.pstatic.net/image/030/2026/06/22/0003439872_001_20260622121113087.jpg?type=w800'}
+{d:46113,t:'미래엔그룹, 2026년 정기 임원 인사 및 직급체계 개편 단행',u:'https://n.news.naver.com/mnews/article/030/0003413707?sid=102',s:'보도자료',c:'실적·경영',i:'https://imgnews.pstatic.net/image/030/2026/04/01/0003413707_001_20260401155813224.jpg?type=w800'},
+{d:46118,t:'(주)미래엔, 작심 스터디카페 협업 중간고사 지원',u:'https://n.news.naver.com/mnews/article/014/0005502855?sid=102',s:'보도자료',c:'업무협약·MOU',i:'https://imgnews.pstatic.net/image/014/2026/04/06/0005502855_001_20260406094514407.jpg?type=w800'},
+{d:46120,t:"㈜미래엔, 예비 교사 멘토링 프로젝트 '엔토링·미래잇다' 발대식 개최",u:'https://www.cstimes.com/news/articleView.html?idxno=701226',s:'보도자료',c:'교사 지원·네트워크',i:'https://www.cstimes.com/news/photo/202604/701226_620795_418.jpg'},
+{d:46122,t:"미래엔 아이세움, 아베 히로시 신작 '새벽' 출간",u:'https://n.news.naver.com/mnews/article/030/0003416727?sid=102',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/030/2026/04/10/0003416727_001_20260410122509258.jpg?type=w800'},
+{d:46126,t:"㈜미래엔, 교사 모임 단체 '아꿈선'과 업무협약 체결",u:'https://news.mtn.co.kr/news-detail/2026041409482957815',s:'보도자료',c:'업무협약·MOU',i:'https://menu.mtn.co.kr/upload/article/2026/04/14/2026041409482957815_00_231.jpg'},
+{d:46133,t:"㈜미래엔, '몽당분필'과 엠티처 교사 연수 운영…업무 협약 기반 교육 협력 강화",u:'https://n.news.naver.com/mnews/article/030/0003419899?sid=102',s:'보도자료',c:'업무협약·MOU',i:'https://imgnews.pstatic.net/image/030/2026/04/21/0003419899_001_20260421105113917.jpg?type=w800'},
+{d:46134,t:"미래엔 아이세움, 재미난다 과학 시리즈 '우리도 억울합니다!' 출간",u:'https://edu.chosun.com/site/data/html_dir/2026/04/22/2026042280033.html',s:'보도자료',c:'교과서·학습서',i:'https://edu.chosun.com/site/data/img_dir/2026/04/22/2026042280033_0.jpg'},
+{d:46139,t:"㈜미래엔, 초등학생 대상 교육 멘토링 사회공헌 프로그램 '미래엔 희망키움단' 4기 발대식 개최",u:'https://edu.chosun.com/site/data/html_dir/2026/04/27/2026042780059.html',s:'보도자료',c:'마케팅·이벤트',i:'https://edu.chosun.com/site/data/img_dir/2026/04/27/2026042780059_0.jpg'},
+{d:46142,t:"㈜미래엔 아이세움, 가정의 달 맞아 뮤직온더블록과 '2026 광화문 가족 동행 축제' 체험 부스 운영",u:'https://n.news.naver.com/mnews/article/030/0003423449?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/04/30/0003423449_001_20260430134614723.jpg?type=w800'},
+{d:46148,t:'㈜미래엔, 임직원 대상 암·중증질환 지원 복지제도 신설… 위로금 4,900만 원 전달',u:'https://n.news.naver.com/mnews/article/030/0003424794?sid=102',s:'보도자료',c:'실적·경영',i:'https://imgnews.pstatic.net/image/030/2026/05/06/0003424794_001_20260506170617142.jpg?type=w800'},
+{d:46153,t:"미래엔 와이즈베리, 일본 인구전략회의가 제시하는 미래 전략 '지방 창생' 출간",u:'https://n.news.naver.com/mnews/article/030/0003426188?sid=102',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/030/2026/05/11/0003426188_001_20260511150008092.jpg?type=w800'},
+{d:46155,t:"미래엔그룹, 키움 히어로즈 스폰서 데이 '2026 미래엔데이' 진행",u:'https://n.news.naver.com/mnews/article/030/0003426946?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/05/13/0003426946_001_20260513093417021.jpg?type=w800'},
+{d:46161,t:"미래엔, 초등 수학 선생님 대상 '수비수학' 그룹 스터디 모집",u:'https://www.cstimes.com/news/articleView.html?idxno=706285',s:'보도자료',c:'교사 지원·네트워크',i:'https://www.cstimes.com/news/photo/202605/706285_626331_1534.jpg'},
+{d:46162,t:"㈜미래엔, '세계 접근성 인식의 날' 맞아 포용형 음악 활동 앱 '모두의 음악' 공개",u:'https://edu.donga.com/news/articleView.html?idxno=107789',s:'보도자료',c:'교사 지원·네트워크',i:'https://cdn.edu.donga.com/news/photo/202605/107789_171881_1617.jpg'},
+{d:46163,t:'미래엔 초코클래스, MBTI처럼 학습 성향도 진단…진화하는 LMS',u:'https://news.mtn.co.kr/news-detail/2026052116391047923',s:'기사',c:'AI 에듀테크',i:'https://assets.mtn.co.kr/mtn/2026/05/O7gRoX4JTyAo8csK/image/20260521_172450//9968-1779351845470_06.jpg'},
+{d:46169,t:"미래엔 아이세움, '작전명 파도, 폐교는 거절합니다' 출간",u:'https://n.news.naver.com/mnews/article/030/0003431523?sid=102',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/030/2026/05/27/0003431523_001_20260527091808122.jpg?type=w800'},
+{d:46171,t:"미래엔, 학원·공부방 선생님 대상 '여름방학 간식 이벤트' 진행",u:'https://edu.donga.com/news/articleView.html?idxno=108189',s:'보도자료',c:'마케팅·이벤트',i:'https://cdn.edu.donga.com/news/photo/202605/108189_172328_556.png'},
+{d:46183,t:"㈜미래엔, 유아 디지털 학습 플랫폼 '초코키즈' 런칭",u:'https://n.news.naver.com/mnews/article/030/0003436151?sid=102',s:'보도자료',c:'AI 에듀테크',i:'https://imgnews.pstatic.net/image/030/2026/06/10/0003436151_001_20260610102013044.jpg?type=w800'},
+{d:46190,t:"㈜미래엔, '수비수학' 초등 전 학년 라인업 완성… 학부모 체험단 모집",u:'https://n.news.naver.com/mnews/article/030/0003438364?sid=102',s:'보도자료',c:'교과서·학습서',i:'https://imgnews.pstatic.net/image/030/2026/06/17/0003438364_001_20260617100217321.jpg?type=w800'},
+{d:46192,t:'㈜미래엔, 제주교총·세종교총·대구교총과 업무협약 체결',u:'https://www.cstimes.com/news/articleView.html?idxno=710363',s:'보도자료',c:'업무협약·MOU',i:'https://www.cstimes.com/news/photo/202606/710363_630214_181.jpg'},
+{d:46195,t:"㈜미래엔, 2026 '초등학생 톡톡 손글씨 공모전' 및 '창작 글감 공모전' 개최",u:'https://n.news.naver.com/mnews/article/030/0003439872?sid=102',s:'보도자료',c:'마케팅·이벤트',i:'https://imgnews.pstatic.net/image/030/2026/06/22/0003439872_001_20260622121113087.jpg?type=w800'}
 ],
 동아출판:[
-{d:46155,t:'동아출판 두클래스, 스승의 날 교사 이벤트 진행',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=838463',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202605/838463_850052_124_v150.jpg'},
-{d:46162,t:'동아출판, 찾아가는 AI 디지털 수업 연수 확대… 학교 현장 맞춤형 지원으로 교사 수업 역량 강화',u:'https://edu.donga.com/news/articleView.html?idxno=107782',s:'보도자료',c:'신제품·서비스 출시',i:'https://cdn.edu.donga.com/news/photo/202605/107782_171874_055.jpg'},
-{d:46170,t:'동아출판, AI 디지털 교육자료 활용 범위 넓혀',u:'https://www.etoday.co.kr/news/view/2588691',s:'보도자료',c:'신제품·서비스 출시',i:'https://img.etoday.co.kr/pto_db/2026/05/20260528152438_2339328_700_400.jpg'},
-{d:46181,t:"동아출판 두클래스, 현직 교사 위한 '두클래스 윗 미' 세미나 운영",u:'https://edu.chosun.com/site/data/html_dir/2026/06/08/2026060880031.html',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://edu.chosun.com/site/data/img_dir/2026/06/08/2026060880031_0.jpg'},
-{d:46188,t:'"맞춤형 교육 최적화"...동아출판, AI 디지털 자료 수업 활용법 소개',u:'https://n.news.naver.com/mnews/article/031/0001035163?sid=101',s:'보도자료',c:'신제품·서비스 출시',i:'https://imgnews.pstatic.net/image/031/2026/06/15/0001035163_001_20260615161614989.jpg?type=w800'},
-{d:46195,t:"동아출판, 'AI 디지털 교육자료 수업 사례 공모전' 진행… 우수 수업 사례 발굴·확산",u:'https://edu.donga.com/news/articleView.html?idxno=109111',s:'보도자료',c:'수상·인증·기타 홍보',i:'https://cdn.edu.donga.com/news/photo/202606/109111_173333_4845.jpg'}
+{d:46155,t:'동아출판 두클래스, 스승의 날 교사 이벤트 진행',u:'https://www.hansbiz.co.kr/news/articleView.html?idxno=838463',s:'보도자료',c:'교사 지원·네트워크',i:'https://cdn.hansbiz.co.kr/news/thumbnail/202605/838463_850052_124_v150.jpg'},
+{d:46162,t:'동아출판, 찾아가는 AI 디지털 수업 연수 확대… 학교 현장 맞춤형 지원으로 교사 수업 역량 강화',u:'https://edu.donga.com/news/articleView.html?idxno=107782',s:'보도자료',c:'AI 디지털 교육자료(AIDT)',i:'https://cdn.edu.donga.com/news/photo/202605/107782_171874_055.jpg'},
+{d:46170,t:'동아출판, AI 디지털 교육자료 활용 범위 넓혀',u:'https://www.etoday.co.kr/news/view/2588691',s:'보도자료',c:'AI 디지털 교육자료(AIDT)',i:'https://img.etoday.co.kr/pto_db/2026/05/20260528152438_2339328_700_400.jpg'},
+{d:46181,t:"동아출판 두클래스, 현직 교사 위한 '두클래스 윗 미' 세미나 운영",u:'https://edu.chosun.com/site/data/html_dir/2026/06/08/2026060880031.html',s:'보도자료',c:'교사 지원·네트워크',i:'https://edu.chosun.com/site/data/img_dir/2026/06/08/2026060880031_0.jpg'},
+{d:46188,t:'"맞춤형 교육 최적화"...동아출판, AI 디지털 자료 수업 활용법 소개',u:'https://n.news.naver.com/mnews/article/031/0001035163?sid=101',s:'보도자료',c:'AI 디지털 교육자료(AIDT)',i:'https://imgnews.pstatic.net/image/031/2026/06/15/0001035163_001_20260615161614989.jpg?type=w800'},
+{d:46195,t:"동아출판, 'AI 디지털 교육자료 수업 사례 공모전' 진행… 우수 수업 사례 발굴·확산",u:'https://edu.donga.com/news/articleView.html?idxno=109111',s:'보도자료',c:'AI 디지털 교육자료(AIDT)',i:'https://cdn.edu.donga.com/news/photo/202606/109111_173333_4845.jpg'}
 ]
 };
 
@@ -313,7 +345,7 @@ function buildSummary(){
   const counts=COMPANIES.map(c=>DATA[c].length);
   const total=counts.reduce((a,b)=>a+b,0);
   const max=Math.max(...counts);
-  const cats=['신제품·서비스 출시','수상·인증·기타 홍보','사업 제휴·투자','실적·경영 동향'];
+  const cats=['교과서·학습서','AI 디지털 교육자료(AIDT)','AI 에듀테크','교사 지원·네트워크','업무협약·MOU','마케팅·이벤트','실적·경영'];
   const pressVsArticle=COMPANIES.map(c=>{
     const press=DATA[c].filter(a=>a.s==='보도자료').length;
     const article=DATA[c].filter(a=>a.s==='기사').length;
@@ -322,42 +354,78 @@ function buildSummary(){
   return `<div class="slide-inner">
     <div class="summary-title">전체 요약</div>
     <p class="summary-sub">2026년 4~6월 경쟁사 보도 현황 비교 (총 ${total}건)</p>
-    <div style="margin-bottom:32px">
-      ${COMPANIES.map((c,i)=>`<div class="bar-row">
-        <span class="bar-label" style="color:${COMPANY_HEX[c]}">${c}</span>
-        <div class="bar-track"><div class="bar-fill" style="background:${COMPANY_HEX[c]};--w:${Math.round(counts[i]/max*100)}%">${counts[i]}건</div></div>
-      </div>`).join('')}
-    </div>
-    <h3 style="font-size:1.05rem;margin-bottom:14px;font-weight:700">분류별 · 출처별 비교</h3>
-    <table class="summary-table">
-      <thead><tr>
-        <th style="text-align:left">분류</th>
-        ${COMPANIES.map((c,i)=>`<th style="color:${COMPANY_HEX[c]}">${c}</th>`).join('')}
-      </tr></thead>
+    <div id="chartArea" style="margin-bottom:32px"></div>
+    <h3 style="font-size:1.2rem;margin-bottom:20px;font-weight:700">회사별 보도 주요 동향 비교</h3>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;line-height:1.65;table-layout:fixed">
+      <colgroup>
+        <col style="width:90px">
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:25%">
+      </colgroup>
+      <thead>
+        <tr style="border-bottom:2px solid #ddd">
+          <th style="text-align:left;padding:12px 10px;font-size:.95rem;vertical-align:middle">분류</th>
+          <th style="text-align:left;padding:12px 10px;color:#1a56db;font-size:.95rem">천재교육 (39)</th>
+          <th style="text-align:left;padding:12px 10px;color:#047857;font-size:.95rem">비상교육 (14)</th>
+          <th style="text-align:left;padding:12px 10px;color:#6d28d9;font-size:.95rem">미래엔 (21)</th>
+          <th style="text-align:left;padding:12px 10px;color:#c2410c;font-size:.95rem">동아출판 (6)</th>
+        </tr>
+      </thead>
       <tbody>
-        ${cats.map(cat=>`<tr><td>${cat}</td>${COMPANIES.map(c=>{const v=DATA[c].filter(a=>a.c===cat).length;return `<td style="color:${v?COMPANY_HEX[c]:'#ddd'}">${v}</td>`}).join('')}</tr>`).join('')}
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#0891b2;vertical-align:top">교과서·<br>학습서</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 2022 개정 초등 체육 교과서 점유율 1위 기록<br>· 전자책 플랫폼 스콘과 협력, 중학 체크체크 시리즈 Ebook 33종 우선 제공<br>· 비문학 학습서 '비문학 DNA깨우기 시리즈' 2022 개정 교육과정 맞춰 전면 개편(초등·중등 독해)</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 아동출판 브랜드 아이세움 신간 지속 출간 (아베 히로시 '새벽', 재미난다 과학 시리즈 등)</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#1d4ed8;vertical-align:top">AI 디지털<br>교육자료</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· AIDT 개발비 회수 불투명, 재무 구조까지 흔들리는 상황</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151"><strong>6건 중 4건이 AIDT</strong><br>· AI 디지털 교육자료와 '두클래스' 활용법 안내 학교 방문 연수 운영<br>· 방과후 수업·단기 특강 등 다양한 교육 과정에 AIDT 활용 확대<br>· 전국 교사 대상 수업 활용법 소개<br>· AI 디지털 교육자료 수업 사례 공모전 진행</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#7c3aed;vertical-align:top">AI<br>에듀테크</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 교수학습 플랫폼 T셀파에 AI 기능 대폭 강화<br><span style="padding-left:14px;color:#666">- 'AI 행정 업무 지원 서비스' 중점</span><br><span style="padding-left:14px;color:#666">- 'AI 평가 서비스'로 학생 기초학력 진단·학습 결손 파악</span><br><span style="padding-left:14px;color:#666">- 'AI 글쓰기 지도 서비스'로 다수 학생 글쓰기 실시간 첨삭 보조</span></td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· '올비아' 무료 체험단 모집 — 교사가 AI 플랫폼으로 수업 준비~학생 AI 조교 복습까지 전 과정 체험<br>· '올비아' EDIX Tokyo 2026 출품, 해외 진출 시동</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 5~7세 유아 맞춤형 서비스 '초코키즈' 출시 — 영상 콘텐츠 시청에 그치지 않고 이해·정리·활동으로 확장되는 온오프라인 연계 학습 구조 적용. 출시 기념 6개월 이용권 구매 시 추가 6개월 제공 프로모션</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#10b981;vertical-align:top">교사 지원·<br>네트워크</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· '2026 천재 T셀파 수업 혁신 연구대회' — 전국 선생님이 연구·검증한 수업 사례 공유<br>· 교사 대상 체험형 연수 — 학생들의 건강하고 안전한 생활을 주제로 놀이 활동을 직접 체험하고 수업 적용 방법을 익히는 실습형 프로그램으로 진행<br>· 예비교원 대상 교수학습·에듀테크 체험</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 딱풀리는수학 '2026 프리미어 교육위원 위촉식' — 학습 운영 역량·SNS 홍보 성과 등 종합 평가 선발<br><span style="padding-left:14px;color:#666">- 2025년 교육자문위원→교육전문위원 승격 체계 운영</span></td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 예비교사 멘토링 '엔토링·미래잇다' — 미래엔과 참쌤스쿨이 운영하는 예비교사 성장 지원 프로그램<br>· 초등 수학 선생님 대상 '수비수학' 그룹 스터디 — 수업 사례 공유 및 교육 현장 고민 나눔</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 교사 수업 노하우 공유 오프라인 세미나 '두클래스 윗 미' 운영</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#8b5cf6;vertical-align:top">업무협약·<br>MOU</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 한국교원대 — 교과서/교수학습자료 공동연구<br>· VIDAK — 시각 디자인 콘텐츠 개발 협력<br>· 디지털센서·AI 과학에듀톤 대회 — 아날로그 과학 탐구를 디지털 센서·AI·바이브 코딩과 결합</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 전국진로진학상담교사협의회 — 진로·진학 교육 수요 대응 협력<br>· 경인교대 — 예비교원 수업 역량 강화 및 AI·디지털 기반 미래 교육환경 조성 MOU</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151"><strong>MOU 가장 활발</strong><br>· 아꿈선 — 교육 콘텐츠 개발·디지털 교육 활동 확대 MOU<br>· 몽당분필 — 미래엔 교과서 기반 에듀테크 활용 수업 사례 공유<br>· 제주·세종·대구 교총과 업무협약 체결</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#f59e0b;vertical-align:top">마케팅·<br>이벤트</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151"><strong>비중 가장 높음</strong><br>· 밀크티 초등학생 대상 무료체험 이벤트<br>· 제8회 밀크티 창작동화 공모전<br>· 해법독서논술 전국 사업설명회·창업 지원</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 인기 유튜버 궤도와 과학의 날 특별 협업 강연 진행</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 희망키움단 4기 — 기아대책과 함께하는 취약계층 초등학생 교육 멘토링(2023년 1기부터 운영)<br>· 광화문 가족 동행 축제 체험 부스 운영</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+        <tr style="background:#fff">
+          <td style="padding:12px 10px;font-weight:700;color:#ef4444;vertical-align:top">실적·경영</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 영업손실 297억원, AIDT 손실 여파 적자 3배 확대<br>· 주요 브랜드 가맹점 급감, 공부방 프랜차이즈 구조적 한계 지적</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151"><strong>영업이익 2배 증가</strong><br>· '교육시장 침체 속 비상교육만 날았다' 등 긍정 실적 보도 다수<br>· 기자 취재 기사 비중이 4개사 중 가장 높음</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 2026년 정기 임원 인사 및 직급체계 개편<br>· 임직원 대상 암·중증질환 지원 복지제도 신설</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
       </tbody>
-      <tfoot><tr>
-        <td>합계</td>${counts.map((v,i)=>`<td style="color:${COMPANY_HEX[COMPANIES[i]]}">${v}</td>`).join('')}
-      </tr></tfoot>
     </table>
-    <div class="insight-cards">
-      <div class="insight-card" style="border-color:${COMPANY_HEX['천재교육']}">
-        <h4>천재교육 — PR 건수 1위</h4>
-        <p>40건으로 전체의 49%. 이벤트 중심 공격적 미디어 전략으로 밀크T·T셀파 브랜드 노출 극대화</p>
-      </div>
-      <div class="insight-card" style="border-color:${COMPANY_HEX['비상교육']}">
-        <h4>비상교육 — 기자 취재 최다</h4>
-        <p>14건 중 기사 ${pressVsArticle[1].article}건(${pressVsArticle[1].pct}%). 실적 호조로 자연스러운 미디어 주목 달성</p>
-      </div>
-      <div class="insight-card" style="border-color:${COMPANY_HEX['미래엔']}">
-        <h4>미래엔 — 다각화 전략</h4>
-        <p>21건. 초코클래스·초코키즈 등 디지털 플랫폼 확장과 교총 협약으로 현장 네트워크 강화</p>
-      </div>
-      <div class="insight-card" style="border-color:${COMPANY_HEX['동아출판']}">
-        <h4>동아출판 — AI 디지털 특화</h4>
-        <p>6건으로 최소이나, AI 디지털 교육자료에 선택과 집중하는 명확한 포지셔닝</p>
-      </div>
     </div>
 
   </div>`;
@@ -371,7 +439,6 @@ function buildCard(a, company){
       <div class="news-image" style="position:relative">
         ${a.i ? `<img src="${a.i}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1" onerror="this.remove();this.parentElement.querySelector('.news-image-fallback').style.display='flex'">` : ''}
         <span class="card-cat-badge" style="background:${catColor};z-index:3">${a.c}</span>
-        ${a.s==='기사'?'<span class="card-type-badge article" style="z-index:3">기자 취재</span>':''}
         <button class="share-btn" onclick="copyLink('${safeUrl}',event)" title="링크 복사" style="z-index:3">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         </button>
@@ -396,7 +463,7 @@ function buildCard(a, company){
 function buildCompanySlide(company){
   const articles=DATA[company];
   const color=COMPANY_HEX[company];
-  const cats=[...new Set(articles.map(a=>a.c))];
+  const cats=['교과서·학습서','AI 디지털 교육자료(AIDT)','AI 에듀테크','교사 지원·네트워크','업무협약·MOU','마케팅·이벤트','실적·경영'];
   const pressCount=articles.filter(a=>a.s==='보도자료').length;
   const articleCount=articles.filter(a=>a.s==='기사').length;
   return `<div class="slide-inner">
@@ -420,38 +487,55 @@ function buildCompanySlide(company){
 function buildImplications(){
   return `<div class="slide-inner">
     <div class="summary-title">시사점</div>
-    <p class="summary-sub">경쟁사 보도 동향에서 읽는 전략적 인사이트</p>
-    <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--blue)"></div><h3>천재교육</h3></div>
-      <ul class="impl-body">
-        <li>3개월간 <strong>40건</strong>으로 건수 자체는 4개사 중 가장 많음</li>
-        <li>다만 보도 내용 대부분이 <strong>교재 이벤트, 무료체험, 공모전, 창업 설명회</strong> 등 프로모션 성격으로, 실질적 신사업·신기술 관련 보도는 적은 편</li>
-        <li>기자가 직접 취재한 기사 4건 중 3건이 <strong>AIDT 적자(영업손실 297억), 가맹점 급감</strong> 등 부정적 내용으로 구성</li>
-      </ul>
-    </div>
-    <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--green)"></div><h3>비상교육</h3></div>
-      <ul class="impl-body">
-        <li>'영업익 2배', '1분기 혼자 웃었나' 등 <strong>긍정 실적 기사 다수</strong></li>
-        <li>적은 보도 건수(14건)에도 <strong>자연스러운 미디어 주목</strong> 달성</li>
-        <li>올비아(AI 교육 플랫폼), 기출탭탭(누적 30만) 등 디지털 서비스 성장세</li>
-      </ul>
-    </div>
-    <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--purple)"></div><h3>미래엔</h3></div>
-      <ul class="impl-body">
-        <li>초코클래스(LMS) · 초코키즈(유아 디지털) · 모두의 음악(접근성) 등 <strong>디지털 신사업 적극 전개</strong></li>
-        <li>교총 3개 지부 · 아꿈선 · 몽당분필 등 <strong>교사 단체 협약으로 현장 네트워크 강화</strong></li>
-        <li>아이세움 · 와이즈베리 등 <strong>출판 브랜드 라인업 지속 확대</strong></li>
-      </ul>
-    </div>
-    <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--orange)"></div><h3>동아출판</h3></div>
-      <ul class="impl-body">
-        <li>6건 중 4건이 <strong>'AI 디지털 교육자료'</strong> 관련 — 명확한 포지셔닝</li>
-        <li>두클래스 플랫폼 중심 교사 지원 프로그램 운영</li>
-        <li>보도 건수 최소 — <strong>미디어 노출 확대 여지</strong> 있음</li>
-      </ul>
+    <p class="summary-sub">경쟁사 보도 동향 vs 자사(아이스크림미디어) 비교</p>
+
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;line-height:1.65">
+      <thead>
+        <tr style="border-bottom:2px solid #ddd">
+          <th style="text-align:left;padding:12px 10px;font-size:.95rem;width:110px">분류</th>
+          <th style="text-align:left;padding:12px 10px;font-size:.95rem">경쟁사 동향</th>
+          <th style="text-align:left;padding:12px 10px;font-size:.95rem;width:360px;color:#e9460a">자사 현황 및 시사점</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#0891b2;vertical-align:top">교과서·<br>학습서</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 천재: 초등 체육 교과서 점유율 1위, 학습서 라인업 지속 확대<br>· 미래엔: 아이세움 출판 브랜드 다각화</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#1d4ed8;vertical-align:top">AI 디지털<br>교육자료</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 동아출판: 전체 보도 중 AIDT 비중이 가장 높음. 학교 방문 연수·수업 사례 공모전 등 교사 현장 밀착형 접근<br>· 천재: AIDT 적자(영업손실 297억)로 업계 리스크 인식 확산</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">자사도 <strong>AI 디지털 교육자료</strong> 사업 전개 중. 동아출판처럼 학교 현장 밀착 연수 및 사례 발굴이 중요</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#7c3aed;vertical-align:top">AI<br>에듀테크</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 천재: T셀파에 AI 행정 지원·AI 평가·AI 글쓰기 첨삭 등 기능 대폭 강화<br>· 비상: '올비아' 교사 체험단 운영, EDIX Tokyo 해외 진출<br>· 미래엔: 유아 대상 '초코키즈' 출시</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">자사 <strong>아이쌤지피티·루미티치</strong>와 천재 T셀파 AI가 직접 경쟁 구도. 비상 올비아의 해외 진출은 주시 필요</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#10b981;vertical-align:top">교사 지원·<br>네트워크</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 4개사 모두 교사 연수·연구대회·세미나 등 교사 네트워크 강화에 적극적<br>· 비상: 교육위원 승격 체계로 교사 참여 유인<br>· 미래엔: 참쌤스쿨과 예비교사 멘토링</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">자사 <strong>아크쌤 연구회</strong> 운영 중. 경쟁사 대비 교사 참여 유인책(승격 체계, 예비교사 연계 등)을 강화하여 차별화 필요</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0;background:#fafafa">
+          <td style="padding:12px 10px;font-weight:700;color:#8b5cf6;vertical-align:top">업무협약·<br>MOU</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 미래엔: 교총 3개 지부, 아꿈선, 몽당분필 등 MOU 가장 활발<br>· 비상: 진로진학상담교사협의회, 경인교대 MOU<br>· 천재: 한국교원대, VIDAK 등</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">경쟁사 대비 <strong>교사 단체·교육대학 협약 확대</strong> 검토 필요. 미래엔이 교총·교사 단체와 적극 협약하며 현장 영향력을 넓히고 있는 점 주시</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f0f0f0">
+          <td style="padding:12px 10px;font-weight:700;color:#f59e0b;vertical-align:top">마케팅·<br>이벤트</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 천재: 보도 비중 가장 높음(밀크티 무료체험, 공모전, 창업 설명회 등)<br>· 미래엔: 사회공헌 프로그램(희망키움단) 활용</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">천재의 마케팅 보도는 양은 많으나 프로모션 성격 위주. 자사는 <strong>실질적 성과 중심의 보도</strong>로 차별화하되, 미래엔처럼 CSR 활동을 PR에 활용하는 방안도 고려</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 10px;font-weight:700;color:#ef4444;vertical-align:top">실적·경영</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#374151">· 비상: 영업이익 2배 증가, 긍정 실적 보도 다수<br>· 천재: 영업손실 297억, 가맹점 급감 등 부정 보도</td>
+          <td style="padding:12px 10px;vertical-align:top;color:#aaa">—</td>
+        </tr>
+      </tbody>
+    </table>
     </div>
   </div>`;
 }
@@ -466,7 +550,41 @@ slideContents.forEach((html,i)=>{
   container.appendChild(div);
 });
 
-// 썸네일 옵저버 시작
+// ─── 비율 바 차트 렌더링 ───
+(function(){
+  var area=document.getElementById('chartArea');
+  if(!area)return;
+  var cats=['교과서·학습서','AI 디지털 교육자료(AIDT)','AI 에듀테크','교사 지원·네트워크','업무협약·MOU','마케팅·이벤트','실적·경영'];
+  var short_={'AI 디지털 교육자료(AIDT)':'AIDT','교사 지원·네트워크':'교사 네트워크','마케팅·이벤트':'마케팅','교과서·학습서':'교과서·학습서','업무협약·MOU':'MOU','AI 에듀테크':'AI 에듀테크','실적·경영':'실적'};
+  var html='';
+  COMPANIES.forEach(function(company){
+    var articles=DATA[company];
+    var tot=articles.length;
+    var color=COMPANY_HEX[company];
+    var catData=cats.map(function(cat){return{name:cat,count:articles.filter(function(a){return a.c===cat}).length,color:CAT_COLORS[cat]}});
+    html+='<div style="display:flex;align-items:center;margin-bottom:14px;gap:14px">';
+    html+='<div style="width:100px;text-align:right;font-weight:700;font-size:1.05rem;color:'+color+';flex-shrink:0">'+company+'</div>';
+    html+='<div style="flex:1;display:flex;height:40px;border-radius:8px;overflow:hidden;background:#f3f4f6">';
+    var nonZero=catData.filter(function(x){return x.count>0});
+    nonZero.forEach(function(x,idx){
+      var isLast=(idx===nonZero.length-1);
+      var pct=isLast?100-nonZero.slice(0,idx).reduce(function(s,v){return s+Math.round(v.count/tot*100)},0):Math.round(x.count/tot*100);
+      var label=short_[x.name]||x.name;
+      html+='<div style="flex:'+x.count+';background:'+x.color+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700;min-width:30px" title="'+x.name+' '+x.count+'건 ('+pct+'%)">';
+      html+=pct>=8?(label+' '+pct+'%'):(pct+'%');
+      html+='</div>';
+    });
+    html+='</div>';
+    html+='<div style="width:45px;font-weight:800;font-size:1rem;color:'+color+'">'+tot+'건</div>';
+    html+='</div>';
+  });
+  html+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;padding-left:114px">';
+  cats.forEach(function(cat){
+    html+='<span style="font-size:.85rem;color:'+CAT_COLORS[cat]+';font-weight:600">● '+(short_[cat]||cat)+'</span>';
+  });
+  html+='</div>';
+  area.innerHTML=html;
+})();
 
 // ─── 네비게이션 ───
 let current=0;

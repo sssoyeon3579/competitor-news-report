@@ -30,15 +30,13 @@ html,body{height:100%;font-family:'Pretendard',sans-serif;background:var(--bg);c
 .slide.prev{transform:translateX(-60px)}
 .slide-inner{width:100%;max-width:1200px;padding:30px 40px 100px;flex:1}
 
-/* ─── 네비게이션 ─── */
-.nav-bar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 30px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid #ebebeb;z-index:100}
-.nav-btn{padding:12px 30px;border:none;border-radius:8px;font-size:1.05rem;cursor:pointer;transition:all .2s;font-weight:600;font-family:'Pretendard',sans-serif}
-.nav-btn.prev-btn{background:#f3f4f6;color:var(--text)}
-.nav-btn.prev-btn:hover{background:#e5e7eb}
-.nav-btn.next-btn{background:var(--text);color:var(--white)}
-.nav-btn.next-btn:hover{background:#2d2d4e}
-.nav-btn:disabled{opacity:.3;cursor:default}
-.slide-counter{font-size:1rem;color:var(--muted);font-weight:500}
+/* ─── 네비게이션 (목차형) ─── */
+.nav-bar{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:stretch;padding:0;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-top:1px solid #ebebeb;z-index:100}
+.nav-item{flex:1;padding:16px 0;border:none;font-size:1.05rem;cursor:pointer;transition:all .2s;font-weight:600;font-family:'Pretendard',sans-serif;background:transparent;color:#555;white-space:nowrap;text-align:center;border-right:1px solid #f0f0f0}
+.nav-item:last-child{border-right:none}
+.nav-item:hover{background:#f3f4f6;color:var(--text)}
+.nav-item.active{color:var(--white);font-weight:800}
+.nav-item .nav-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),#f97316);z-index:101;transition:width .4s}
 
 /* ─── 표지 ─── */
@@ -155,10 +153,14 @@ html,body{height:100%;font-family:'Pretendard',sans-serif;background:var(--bg);c
 <img src="logo.png" alt="" class="page-logo">
 <div class="progress-bar" id="progress"></div>
 <div class="slides-container" id="slidesContainer"></div>
-<div class="nav-bar">
-  <button class="nav-btn prev-btn" id="prevBtn" onclick="navigate(-1)">&#8592; 이전</button>
-  <span class="slide-counter" id="counter"></span>
-  <button class="nav-btn next-btn" id="nextBtn" onclick="navigate(1)">다음 &#8594;</button>
+<div class="nav-bar" id="navBar">
+  <button class="nav-item active" data-color="#e9460a" onclick="goTo(0)">표지</button>
+  <button class="nav-item" data-color="#e9460a" onclick="goTo(1)">전체 요약</button>
+  <button class="nav-item" data-color="#1a56db" onclick="goTo(2)"><span class="nav-dot" style="background:#1a56db"></span>천재교육</button>
+  <button class="nav-item" data-color="#047857" onclick="goTo(3)"><span class="nav-dot" style="background:#047857"></span>비상교육</button>
+  <button class="nav-item" data-color="#6d28d9" onclick="goTo(4)"><span class="nav-dot" style="background:#6d28d9"></span>미래엔</button>
+  <button class="nav-item" data-color="#c2410c" onclick="goTo(5)"><span class="nav-dot" style="background:#c2410c"></span>동아출판</button>
+  <button class="nav-item" data-color="#e9460a" onclick="goTo(6)">시사점</button>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -337,15 +339,12 @@ function buildSummary(){
       </tbody>
       <tfoot><tr>
         <td>합계</td>${counts.map((v,i)=>`<td style="color:${COMPANY_HEX[COMPANIES[i]]}">${v}</td>`).join('')}
-      </tr><tr>
-        <td style="font-weight:500;font-size:.85rem">기자 취재 비중</td>
-        ${pressVsArticle.map((p,i)=>`<td style="font-size:.85rem;color:${p.pct>20?'#dc2626':COMPANY_HEX[COMPANIES[i]]}">${p.article}건 (${p.pct}%)</td>`).join('')}
       </tr></tfoot>
     </table>
     <div class="insight-cards">
       <div class="insight-card" style="border-color:${COMPANY_HEX['천재교육']}">
-        <h4>천재교육 — PR 볼륨 1위</h4>
-        <p>40건으로 전체의 49%. 보도자료 중심 공격적 미디어 전략으로 밀크T·T셀파 브랜드 노출 극대화</p>
+        <h4>천재교육 — PR 건수 1위</h4>
+        <p>40건으로 전체의 49%. 이벤트 중심 공격적 미디어 전략으로 밀크T·T셀파 브랜드 노출 극대화</p>
       </div>
       <div class="insight-card" style="border-color:${COMPANY_HEX['비상교육']}">
         <h4>비상교육 — 기자 취재 최다</h4>
@@ -407,9 +406,6 @@ function buildCompanySlide(company){
     </div>
     <div class="company-stats">
       <span class="stat-chip">총 <strong>${articles.length}건</strong></span>
-      <span class="stat-chip">보도자료 <strong>${pressCount}건</strong></span>
-      ${articleCount?`<span class="stat-chip" style="background:#fef3c7;color:#92400e">기자 취재 <strong>${articleCount}건</strong></span>`:''}
-      <span class="stat-chip">${fmtMonth(articles[0].d)} ~ ${fmtMonth(articles[articles.length-1].d)}</span>
     </div>
     <div class="filter-bar" data-company="${company}">
       <button class="filter-btn active" data-cat="전체">전체 (${articles.length})</button>
@@ -426,7 +422,7 @@ function buildImplications(){
     <div class="summary-title">시사점</div>
     <p class="summary-sub">경쟁사 보도 동향에서 읽는 전략적 인사이트</p>
     <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--blue)"></div><h3>천재교육</h3><span class="tag" style="background:var(--blue)">PR 볼륨 1위, 그러나 내용은 홍보성 위주</span></div>
+      <div class="impl-company"><div class="dot" style="background:var(--blue)"></div><h3>천재교육</h3></div>
       <ul class="impl-body">
         <li>3개월간 <strong>40건</strong>으로 건수 자체는 4개사 중 가장 많음</li>
         <li>다만 보도 내용 대부분이 <strong>교재 이벤트, 무료체험, 공모전, 창업 설명회</strong> 등 프로모션 성격으로, 실질적 신사업·신기술 관련 보도는 적은 편</li>
@@ -434,15 +430,15 @@ function buildImplications(){
       </ul>
     </div>
     <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--green)"></div><h3>비상교육</h3><span class="tag" style="background:var(--green)">실적이 최고의 홍보</span></div>
+      <div class="impl-company"><div class="dot" style="background:var(--green)"></div><h3>비상교육</h3></div>
       <ul class="impl-body">
-        <li><span class="impl-highlight">기자 취재 기사 비중 36%</span> (4개사 중 최고) — '영업익 2배', '1분기 혼자 웃었나' 등 긍정 실적 기사 다수</li>
-        <li>적은 PR 볼륨(14건)에도 <strong>자연스러운 미디어 주목</strong> 달성</li>
+        <li>'영업익 2배', '1분기 혼자 웃었나' 등 <strong>긍정 실적 기사 다수</strong></li>
+        <li>적은 보도 건수(14건)에도 <strong>자연스러운 미디어 주목</strong> 달성</li>
         <li>올비아(AI 교육 플랫폼), 기출탭탭(누적 30만) 등 디지털 서비스 성장세</li>
       </ul>
     </div>
     <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--purple)"></div><h3>미래엔</h3><span class="tag" style="background:var(--purple)">교육 플랫폼 다각화</span></div>
+      <div class="impl-company"><div class="dot" style="background:var(--purple)"></div><h3>미래엔</h3></div>
       <ul class="impl-body">
         <li>초코클래스(LMS) · 초코키즈(유아 디지털) · 모두의 음악(접근성) 등 <strong>디지털 신사업 적극 전개</strong></li>
         <li>교총 3개 지부 · 아꿈선 · 몽당분필 등 <strong>교사 단체 협약으로 현장 네트워크 강화</strong></li>
@@ -450,11 +446,11 @@ function buildImplications(){
       </ul>
     </div>
     <div class="impl-section">
-      <div class="impl-company"><div class="dot" style="background:var(--orange)"></div><h3>동아출판</h3><span class="tag" style="background:var(--orange)">AI 디지털 선택과 집중</span></div>
+      <div class="impl-company"><div class="dot" style="background:var(--orange)"></div><h3>동아출판</h3></div>
       <ul class="impl-body">
         <li>6건 중 4건이 <strong>'AI 디지털 교육자료'</strong> 관련 — 명확한 포지셔닝</li>
         <li>두클래스 플랫폼 중심 교사 지원 프로그램 운영</li>
-        <li>PR 볼륨 최소 — <strong>미디어 노출 확대 여지</strong> 있음</li>
+        <li>보도 건수 최소 — <strong>미디어 노출 확대 여지</strong> 있음</li>
       </ul>
     </div>
   </div>`;
@@ -478,10 +474,21 @@ const slides=document.querySelectorAll('.slide');
 const total=slides.length;
 
 function updateNav(){
-  document.getElementById('counter').textContent=`${current+1} / ${total}`;
   document.getElementById('progress').style.width=`${((current+1)/total)*100}%`;
-  document.getElementById('prevBtn').disabled=current===0;
-  document.getElementById('nextBtn').disabled=current===total-1;
+  document.querySelectorAll('.nav-item').forEach((btn,i)=>{
+    const isActive=i===current;
+    btn.classList.toggle('active',isActive);
+    btn.style.background=isActive?btn.dataset.color:'';
+  });
+}
+
+function goTo(idx){
+  if(idx<0||idx>=total||idx===current)return;
+  current=idx;
+  slides.forEach((s,i)=>{s.className='slide'+(i===current?' active':'')});
+  slides[current].scrollTop=0;
+  updateNav();
+  if(current===1)setTimeout(()=>document.querySelectorAll('.bar-fill').forEach(b=>b.classList.add('animate')),100);
 }
 
 function navigate(dir){
